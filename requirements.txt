@@ -33,6 +33,7 @@ google-auth==2.41.1
 googleapis-common-protos==1.71.0
 greenlet==3.2.4
 gritql==0.2.0
+groq==0.33.0
 grpcio==1.76.0
 h11==0.16.0
 httpcore==1.0.9
@@ -57,6 +58,7 @@ langchain-classic==1.0.0
 langchain-cli==0.0.37
 langchain-community==0.4.1
 langchain-core==1.0.1
+langchain-groq==1.0.0
 langchain-huggingface==1.0.0
 langchain-ollama==1.0.0
 langchain-text-splitters==1.0.0
