@@ -36,4 +36,4 @@ docker run -d \
   --network=host \
   -v $(pwd)/data:/app/data \
   -v $(pwd)/chroma_db:/app/chroma_db \
-  rag-chatbot
+  kcaa-rag-chatbot
