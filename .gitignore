@@ -219,3 +219,5 @@ __marimo__/
 data
 .env
 .vscode
+requirements - Copy.txt
+app copy.py
