@@ -1,0 +1,39 @@
+---
+title: KCAA Smart Assistant
+emoji: ✈️
+colorFrom: blue
+colorTo: purple
+sdk: streamlit
+sdk_version: 1.28.0
+app_file: app.py
+pinned: false
+---
+
+# KCAA Smart Assistant
+
+A RAG-based chatbot that answers questions about KCAA regulations and aviation information using official documents.
+
+## Features
+
+- Document-based Q&A using RAG
+- Source citation
+- Real-time processing
+- User-friendly interface
+
+## How it Works
+
+1. Uploads PDF documents to create a knowledge base
+2. Uses ChromaDB for vector storage
+3. Retrieves relevant context for each query
+4. Generates accurate answers with citations
+
+docker build --network=host -t kcaa-rag-chatbot .
+
+
+docker run -d \
+  --name kcaa-rag-chatbot \
+  -p 8501:8501 \
+  --network=host \
+  -v $(pwd)/data:/app/data \
+  -v $(pwd)/chroma_db:/app/chroma_db \
+  rag-chatbot
