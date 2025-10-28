@@ -221,3 +221,4 @@ data
 .vscode
 requirements - Copy.txt
 app copy.py
+requirements copy.txt
