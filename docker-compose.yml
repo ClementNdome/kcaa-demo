@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  rag-chatbot:
+    build: .
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./data:/app/data
+      - ./chroma_db:/app/chroma_db
+    environment:
+      - OLLAMA_HOST=host.docker.internal  # If using local Ollama
