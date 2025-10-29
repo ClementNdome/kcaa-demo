@@ -25,7 +25,7 @@ llm = ChatGroq(
     model="llama-3.1-8b-instant",
     temperature=0.1,
     api_key=os.getenv("GROQ_API_KEY"),
-    max_tokens=1024
+    max_tokens=512 # reduced tokens for faster responses
 )
 
 system_prompt = (
