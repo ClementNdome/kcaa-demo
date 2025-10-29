@@ -39,7 +39,17 @@ prompt = ChatPromptTemplate.from_messages([("system", system_prompt), ("human", 
 retriever = vectorstore.as_retriever(search_kwargs={'k': 5})
 qa_chain = create_retrieval_chain(retriever=retriever, combine_docs_chain=prompt | llm)
 
-
+def clean_filename(filename):
+    """Clean and format filenames for better readability"""
+    # Remove extensions and basic cleanup
+    cleaned = filename.replace('.pdf', '').replace('_', ' ').replace('-', ' ')
+    # Handle specific patterns (e.g., remove trailing numbers if they're artifacts)
+    cleaned = re.sub(r'\s*\d+$', '', cleaned)  # Remove trailing numbers like " 2"
+    # Remove duplicates and extra spaces
+    cleaned = re.sub(r'\b(\w+)\s+\1\b', r'\1', cleaned)
+    cleaned = re.sub(r'\s+', ' ', cleaned)
+    # Capitalize properly
+    return cleaned.strip().title()
 
 def format_pages(pages):
     """Format a list of page numbers into compact ranges (e.g., '1-3, 5')"""
