@@ -142,33 +142,17 @@ def ask_question(query):
             cleaned += f" (Pages: {pages_str})"
         local_sources.append(cleaned)
     
-    # Step 2: Check if local is sufficient; if not (or always for freshness), fetch web/social
-    extended_context = ""
-    web_sources = []
-    
-    # Fetch from KCAA website (specific pages or search)
-    website_content = search_web(query, site="kcaa.or.ke", num_results=5)
-    if "Error" not in website_content:
-        extended_context += f"\n\nWeb Context from KCAA Site: {website_content}"
-        web_sources.append("KCAA Website[](https://kcaa.or.ke/)")
-    
-    # Fetch from social media (site-specific searches for recent posts)
-    social_sites = {
-        "X (Twitter)": "twitter.com/CAA_Kenya",
-        "LinkedIn": "linkedin.com/company/kenyacaa",
-        "Facebook": "facebook.com/kcaake",
-        "Instagram": "instagram.com/caa_kenya"
-    }
-    for platform, site in social_sites.items():
-        social_content = search_web(query, site=site, num_results=3)
-        if "Error" not in social_content:
-            extended_context += f"\n\n{platform} Context: {social_content}"
-            web_sources.append(f"{platform} ({site})")
-    
+    # Step 2: Conditional fetch - only if local insufficient
+    if "I don't have that information" in local_answer:
+        extended_context, web_sources = parallel_search(query)
+    else:
+        extended_context, web_sources = "", []
+
     # Step 3: If extended context available, re-query LLM with combined context
     if extended_context:
         combined_context = f"{local_answer}\n\nAdditional Web/Social Context: {extended_context}"
-        final_result = qa_chain.invoke({'input': query, 'context': combined_context})  # Override with extended
+        # For streaming, we'll handle in UI; here just invoke
+        final_result = qa_chain.invoke({'input': query, 'context': combined_context})
         answer = final_result['answer'].content
     else:
         answer = local_answer
@@ -178,6 +162,8 @@ def ask_question(query):
     sources_md = "\n".join(f"• {source}" for source in sorted(set(all_sources)))  # Deduplicate
     
     return f"{answer}\n\n### Sources\n{sources_md}"
+    
+
 
 # Streamlit UI
 st.title("KCAA Smart Assistant")
