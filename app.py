@@ -12,7 +12,7 @@ from collections import defaultdict
 import requests
 from bs4 import BeautifulSoup
 from ddgs import DDGS  # Updated import: Use ddgs instead of duckduckgo_search
-
+from concurrent.futures import ThreadPoolExecutor, as_completed  # For parallel searches
 # Load environment variables
 load_dotenv()
 
@@ -91,6 +91,34 @@ def search_web(query, site=None, num_results=3):
     except Exception as e:
         return f"Error searching web: {str(e)}"
 
+def parallel_search(query):
+    """Run web and social searches in parallel"""
+    extended_context = ""
+    web_sources = []
+    
+    # Define search tasks: (platform, site, num_results)
+    tasks = [
+        ("KCAA Website", "kcaa.or.ke", 3),  # Reduced num_results
+        ("X (Twitter)", "twitter.com/CAA_Kenya", 2),
+        ("LinkedIn", "linkedin.com/company/kenyacaa", 2),
+        ("Facebook", "facebook.com/kcaake", 2),
+        ("Instagram", "instagram.com/caa_kenya", 2)
+    ]
+    
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        futures = {executor.submit(search_web, query, site=task[1], num_results=task[2]): task[0] for task in tasks}
+        for future in as_completed(futures):
+            platform = futures[future]
+            content = future.result()
+            if "Error" not in content:
+                if platform == "KCAA Website":
+                    extended_context += f"\n\nWeb Context from KCAA Site: {content}"
+                    web_sources.append("KCAA Website[](https://kcaa.or.ke/)")
+                else:
+                    extended_context += f"\n\n{platform} Context: {content}"
+                    web_sources.append(f"{platform} ({tasks[0][1] if platform == 'KCAA Website' else tasks[1][1]})")  # Adjust as needed
+    
+    return extended_context, web_sources
 @st.cache_data
 def ask_question(query):
     # Step 1: Local retrieval
