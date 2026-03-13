@@ -1,6 +1,6 @@
 # KCAA Smart Assistant
 
-[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://kc-chatbot.streamlit.app/ 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://adv-chatbot.streamlit.app/ 
 
 ## Overview
 
